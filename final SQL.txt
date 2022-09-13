@@ -1,0 +1,566 @@
+Data Scientist Role Play: Profiling and Analyzing the Yelp Dataset Coursera Worksheet
+
+This is a 2-part assignment. In the first part, you are asked a series of questions that will help you profile and understand the data just like a data scientist would. For this first part of the assignment, you will be assessed both on the correctness of your findings, as well as the code you used to arrive at your answer. You will be graded on how easy your code is to read, so remember to use proper formatting and comments where necessary.
+
+In the second part of the assignment, you are asked to come up with your own inferences and analysis of the data for a particular research question you want to answer. You will be required to prepare the dataset for the analysis you choose to do. As with the first part, you will be graded, in part, on how easy your code is to read, so use proper formatting and comments to illustrate and communicate your intent as required.
+
+For both parts of this assignment, use this "worksheet." It provides all the questions you are being asked, and your job will be to transfer your answers and SQL coding where indicated into this worksheet so that your peers can review your work. You should be able to use any Text Editor (Windows Notepad, Apple TextEdit, Notepad ++, Sublime Text, etc.) to copy and paste your answers. If you are going to use Word or some other page layout application, just be careful to make sure your answers and code are lined appropriately.
+In this case, you may want to save as a PDF to ensure your formatting remains intact for you reviewer.
+
+
+
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+	
+i. Attribute table = 10000
+ii. Business table = 10000
+iii. Category table = 10000
+iv. Checkin table = 10000
+v. elite_years table = 10000
+vi. friend table = 10000
+vii. hours table = 10000
+viii. photo table = 10000
+ix. review table = 10000
+x. tip table = 10000
+xi. user table = 10000
+	
+
+
+2. Find the total distinct records by either the foreign key or primary key for each table.
+ If two foreign keys are listed in the table, please specify which foreign key.
+
+i. Business = 10000(id)
+ii. Hours = 1562(business_id)
+iii. Category = 2643(business_id)
+iv. Attribute = 1115(business_id)
+v. Review =8090(business_id), 10000(id), 9581(user_id)
+vi. Checkin = 493(business_id)
+vii. Photo = 6493(business_id), 10000(id)
+viii. Tip = 3979(business_id), 537(user_id) 
+ix. User = 10000(id)
+x. Friend = 11(user_id)
+xi. Elite_years = 2780(user_id)
+
+Note: Primary Keys are denoted in the ER-Diagram with a yellow key icon.	
+
+
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+	Answer:  No
+	
+	
+	SQL code used to arrive at answer:
+
+	select *
+	from user
+	where id is null or 
+	name is null or
+	review_count is null or 
+	yelping_since is null or
+	useful is null or 
+	funny is null or
+	cool is null or
+	fans is null or 
+	average_stars is null or 
+	compliment_hot is null or 
+	compliment_more is null or 
+	compliment_profile is null or 
+	compliment_cute is null or
+	compliment_list is null or 
+	compliment_note is null or 
+	compliment_plain is null or 
+	compliment_cool is null or
+	compliment_funny is null or 
+	compliment_writer is null or 
+	compliment_photos is null
+	
+	
+
+	
+4. For each table and column listed below, display the smallest (minimum), 
+largest (maximum), and average (mean) value for the following fields:
+
+	i. Table: Review, Column: Stars
+	
+		min:	1	max:	5	avg: 3.7082
+		
+	
+	ii. Table: Business, Column: Stars
+	
+		min:	1	max:	5	avg: 3.6549
+		
+	
+	iii. Table: Tip, Column: Likes
+	
+		min:	0	max:	2	avg: 0.0144
+		
+	
+	iv. Table: Checkin, Column: Count
+	
+		min:	1	max:	53	avg: 1.9414
+		
+	
+	v. Table: User, Column: Review_count
+	
+		min:	0	max:	2000	avg: 24.2995
+
+		
+
+
+5. List the cities with the most reviews in descending order:
+
+	SQL code used to arrive at answer:
+	
+	select city,
+	count(*),
+	review_count,
+	sum(review_count)
+	from business
+	group by city
+	order by sum(review_count) desc
+
+	Copy and Paste the Result Below: 
+
++-----------------+----------+--------------+-------------------+
+| city            | count(*) | review_count | sum(review_count) |
++-----------------+----------+--------------+-------------------+
+| Las Vegas       |     1561 |            4 |             82854 |
+| Phoenix         |     1001 |           25 |             34503 |
+| Toronto         |      985 |           19 |             24113 |
+| Scottsdale      |      497 |           15 |             20614 |
+| Charlotte       |      468 |          120 |             12523 |
+| Henderson       |      274 |           38 |             10871 |
+| Tempe           |      261 |           10 |             10504 |
+| Pittsburgh      |      353 |           68 |              9798 |
+| Montréal        |      337 |           22 |              9448 |
+| Chandler        |      232 |           26 |              8112 |
+| Mesa            |      304 |           31 |              6875 |
+| Gilbert         |      188 |            3 |              6380 |
+| Cleveland       |      189 |            8 |              5593 |
+| Madison         |      176 |           26 |              5265 |
+| Glendale        |      188 |           14 |              4406 |
+| Mississauga     |      150 |           31 |              3814 |
+| Edinburgh       |      239 |            5 |              2792 |
+| Peoria          |      105 |            9 |              2624 |
+| North Las Vegas |       70 |           35 |              2438 |
+| Markham         |       80 |           54 |              2352 |
+| Champaign       |       71 |           10 |              2029 |
+| Stuttgart       |      141 |            4 |              1849 |
+| Surprise        |       60 |            3 |              1520 |
+| Lakewood        |       32 |            5 |              1465 |
+| Goodyear        |       41 |           49 |              1155 |
++-----------------+----------+--------------+-------------------+
+(Output limit exceeded, 25 of 362 total rows shown) 
+
+	
+
+6. Find the distribution of star ratings to the business in the following cities:
+
+i. Avon
+
+SQL code used to arrive at answer:
+
+	select stars,
+	count(*)
+	from business
+	where city = 'Avon'
+	group by stars
+
+
+Copy and Paste the Resulting Table Below (2 columns    star rating and count):
+	
++-------+----------+
+| stars | count(*) |
++-------+----------+
+|   1.5 |        1 |
+|   2.5 |        2 |
+|   3.5 |        3 |
+|   4.0 |        2 |
+|   4.5 |        1 |
+|   5.0 |        1 |
++-------+----------+
+
+
+ii. Beachwood
+
+SQL code used to arrive at answer:
+	
+	select stars,
+	count(*)
+	from business
+	where city = 'Beachwood'
+	group by stars
+
+Copy and Paste the Resulting Table Below (2 columns    star rating and count):
+
+
++-------+----------+
+| stars | count(*) |
++-------+----------+
+|   2.0 |        1 |
+|   2.5 |        1 |
+|   3.0 |        2 |
+|   3.5 |        2 |
+|   4.0 |        1 |
+|   4.5 |        2 |
+|   5.0 |        5 |
++-------+----------+
+
+
+7. Find the top 3 users based on their total number of reviews:
+		
+	SQL code used to arrive at answer:
+	
+	select name,
+	review_count,
+	id
+	from user
+	order by review_count desc
+	limit 3
+		
+	Copy and Paste the Result Below:
+
++--------+--------------+------------------------+
+| name   | review_count | id                     |
++--------+--------------+------------------------+
+| Gerald |         2000 | -G7Zkl1wIWBBmD0KRy_sCw |
+| Sara   |         1629 | -3s52C4zL_DHRK0ULG6qtg |
+| Yuri   |         1339 | -8lbUNlXVSoXqaRRiHiSNg |
++--------+--------------+------------------------+
+
+
+
+8. Does posing more reviews correlate with more fans?
+
+	Please explain your findings and interpretation of the results:
+	
+	I think there's no correlation. For example, Amy got most fans (503) in all users,
+	but she only wrote 609 reviews. However, Gernald was the person who wrote most 
+	reviews, he only has 253 fans. In conclusion, more fans isn't related to more reviews.
+
++------+--------------+-----------+
+| fans | review_count | name      |
++------+--------------+-----------+
+|  503 |          609 | Amy       |
+|  497 |          968 | Mimi      |
+|  311 |         1153 | Harald    |
+|  253 |         2000 | Gerald    |
+|  173 |          930 | Christine |
++------+--------------+-----------+
+	
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	Answer: love
+
+	
+	SQL code used to arrive at answer:
+
+	select count(*)
+	from review
+	where text like '%hate%' 
+
++----------+
+| count(*) |
++----------+
+|      232 |
++----------+
+
+
+	select count(*)
+	from review
+	where text like '%love%'
+	
+
++----------+
+| count(*) |
++----------+
+|     1780 |
++----------+
+	
+10. Find the top 10 users with the most fans:
+
+	SQL code used to arrive at answer:
+
+	select fans,
+	name
+	from user
+	order by fans desc
+	limit 10
+	
+	
+	Copy and Paste the Result Below:
+
+
++------+-----------+
+| fans | name      |
++------+-----------+
+|  503 | Amy       |
+|  497 | Mimi      |
+|  311 | Harald    |
+|  253 | Gerald    |
+|  173 | Christine |
+|  159 | Lisa      |
+|  133 | Cat       |
+|  126 | William   |
+|  124 | Fran      |
+|  120 | Lissa     |
++------+-----------+
+
+
+
+
+Part 2: Inferences and Analysis
+
+1. Pick one city and category of your choice and group the businesses in that
+   city or category by their overall star rating. Compare the businesses with 2-3 stars
+   to the businesses with 4-5 stars and answer the following questions. Include your code.
+	
+i. Do the two groups you chose to analyze have a different distribution of hours?
+
+	Yes.
+
+[SQL code used for analysis:]
+
+	select business.city,
+	business.stars,
+	business.name,
+	hours.hours,
+	category.category
+	from business
+	left join hours on business.id = hours.business_id
+	left join category on business.id = category.business_id
+	where (business.stars between 2 and 5 
+	and hours is not null)
+	and city ='Las Vegas'
+	and category = 'Shopping'
+	order by stars
+
++-----------+-------+--------------------------------+-----------------------+----------+
+| city      | stars | name                           | hours                 | category |
++-----------+-------+--------------------------------+-----------------------+----------+
+| Las Vegas |   2.5 | Walgreens                      | Monday|8:00-22:00     | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Tuesday|8:00-22:00    | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Friday|8:00-22:00     | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Wednesday|8:00-22:00  | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Thursday|8:00-22:00   | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Sunday|8:00-22:00     | Shopping |
+| Las Vegas |   2.5 | Walgreens                      | Saturday|8:00-22:00   | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Monday|10:00-16:00    | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Tuesday|10:00-19:00   | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Friday|10:00-16:00    | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Wednesday|10:00-16:00 | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Thursday|10:00-19:00  | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  | Saturday|10:00-16:00  | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Monday|8:00-16:30     | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Tuesday|8:00-16:30    | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Friday|8:00-16:30     | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Wednesday|8:00-16:30  | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Thursday|8:00-16:30   | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Sunday|8:00-16:30     | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center | Saturday|8:00-16:30   | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       | Friday|8:00-17:00     | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       | Tuesday|8:00-17:00    | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       | Thursday|8:00-17:00   | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       | Wednesday|8:00-17:00  | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       | Monday|8:00-17:00     | Shopping |
++-----------+-------+--------------------------------+-----------------------+----------+
+
+ii. Do the two groups you chose to analyze have a different number of reviews?
+         
+	Yes.
+
+[SQL code used for analysis:]
+
+	select business.city,
+	business.stars,
+	business.name,
+	business.review_count,
+	category.category
+	from business
+	left join category on business.id = category.business_id
+	where (business.stars between 2 and 5 )
+	and city ='Las Vegas'
+	and category = 'Shopping'
+	order by stars
+
++-----------+-------+--------------------------------+--------------+----------+
+| city      | stars | name                           | review_count | category |
++-----------+-------+--------------------------------+--------------+----------+
+| Las Vegas |   2.5 | Walgreens                      |            6 | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  |           11 | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center |           32 | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       |            4 | Shopping |
++-----------+-------+--------------------------------+--------------+----------+
+         
+iii. Are you able to infer anything from the location data provided between these 
+     two groups? Explain.
+	Yes. Although there are only few results from what i chose, we can still find
+	out where is closer to the east may got less reviews and stars.
+
+[SQL code used for analysis:]
+
+	select business.city,
+	business.stars,
+	business.name,
+	business.review_count,
+	business.neighborhood,
+	category.category
+	from business
+	left join category on business.id = category.business_id
+	where (business.stars between 2 and 5 )
+	and city ='Las Vegas'
+	and category = 'Shopping'
+	order by stars
+		
++-----------+-------+--------------------------------+--------------+--------------+----------+
+| city      | stars | name                           | review_count | neighborhood | category |
++-----------+-------+--------------------------------+--------------+--------------+----------+
+| Las Vegas |   2.5 | Walgreens                      |            6 | Eastside     | Shopping |
+| Las Vegas |   3.5 | Wooly Wonders                  |           11 | Southeast    | Shopping |
+| Las Vegas |   4.5 | Red Rock Canyon Visitor Center |           32 |              | Shopping |
+| Las Vegas |   5.0 | Desert Medical Equipment       |            4 |              | Shopping |
++-----------+-------+--------------------------------+--------------+--------------+----------+
+
+2. Group business based on the ones that are open and the ones that are closed. 
+   What differences can you find between the ones that are still open and the ones 
+   that are closed? List at least two differences and the SQL code you used to arrive 
+   at your answer.
+		
+i. Difference 1:
+	
+	The ones which are closed, their categories are more related to restaurants or foods
+	in Las Vegas.
+
+[SQL code used for analysis:]
+
+	select business.name,
+	business.review_count,
+	business.is_open,
+	category.category
+	from business
+	left join category on business.id = category.business_id
+	where is_open = 0
+	and city = 'Las Vegas'
+	and category.category is not null
+
++-----------------------------+--------------+---------+----------------------+
+| name                        | review_count | is_open | category             |
++-----------------------------+--------------+---------+----------------------+
+| Wooly Wonders               |           11 |       0 | Knitting Supplies    |
+| Wooly Wonders               |           11 |       0 | Shopping             |
+| Sweet Ruby Jane Confections |           30 |       0 | Food                 |
+| Sweet Ruby Jane Confections |           30 |       0 | Chocolatiers & Shops |
+| Sweet Ruby Jane Confections |           30 |       0 | Bakeries             |
+| Sweet Ruby Jane Confections |           30 |       0 | Specialty Food       |
+| Sweet Ruby Jane Confections |           30 |       0 | Desserts             |
+| Jacques Cafe                |          168 |       0 | Restaurants          |
+| Jacques Cafe                |          168 |       0 | Vegetarian           |
+| Jacques Cafe                |          168 |       0 | French               |
+| Jacques Cafe                |          168 |       0 | American (New)       |
+| Jacques Cafe                |          168 |       0 | Breakfast & Brunch   |
+| Jacques Cafe                |          168 |       0 | Sandwiches           |
+| Jacques Cafe                |          168 |       0 | Gluten-Free          |
+| Hibachi-San                 |            3 |       0 | Restaurants          |
+| Hibachi-San                 |            3 |       0 | Japanese             |
++-----------------------------+--------------+---------+----------------------+
+
+         
+ii. Difference 2:
+         
+	The ones which are closed have less reviews than the ones which are still open.
+         
+[SQL code used for analysis:]
+
+	select is_open,
+	sum(review_count)
+	from business
+	group by is_open
+
++---------+-------------------+
+| is_open | sum(review_count) |
++---------+-------------------+
+|       0 |             35261 |
+|       1 |            269300 |
++---------+-------------------+
+
+
+3. For this last part of your analysis, you are going to choose the type of analysis 
+   you want to conduct on the Yelp dataset and are going to prepare the data for analysis.
+
+Ideas for analysis include: Parsing out keywords and business attributes for sentiment 
+  analysis, clustering businesses to find commonalities or anomalies between them,
+  predicting the overall star rating for a business, predicting the number of fans
+  a user will have, and so on. These are just a few examples to get you started, 
+  so feel free to be creative and come up with your own problem you want to solve.
+ 
+Provide answers, in-line, to all of the following:
+	
+i. Indicate the type of analysis you chose to do:
+
+         I would like to join user table and friend table together, to see if the user got
+	more funny or hot compliments may have more friends.
+         
+ii. Write 1-2 brief paragraphs on the type of data you will need for your analysis and why you chose that data:
+
+	At first, my prediction is when a user got more hot or funny compliments, they might have more friends.
+	However, after i joined two table together and counted the number of friends each user have, i found out that
+	in this dataset only Gabe has 662 friends, but he only got 5 and 15 compliments which refers to hot and funny.
+	The rest of users don't have any friend although they got many hot and funny compliments.
+	Therefore, my prediction went wrong, there's no relation between two.
+
+	Futhermore, I observed that maybe with a higher average of stars would have more friends. For example, Gabe has
+	4.72 in the average of stars, which is a high score compared to others, and he got the most friend in this dataset.
+                           
+                  
+iii. Output of your finished dataset:
++-----------+--------------+---------------+----------------+------------------+------------------------+------------------+
+| name      | review_count | average_stars | compliment_hot | compliment_funny | friend_id              | count(friend_id) |
++-----------+--------------+---------------+----------------+------------------+------------------------+------------------+
+| Gabe      |          277 |          4.72 |              5 |               15 | Eu8oQQBbesupLbf-73bKZg |              662 |
+| Harald    |         1153 |           4.4 |           7246 |            12008 | None                   |                0 |
+| Fran      |          862 |           4.1 |           2334 |             4285 | None                   |                0 |
+| Amy       |          609 |          3.21 |           2370 |             2950 | None                   |                0 |
+| Greg      |          408 |          3.67 |           1004 |             1209 | None                   |                0 |
+| Jim       |          671 |          3.85 |            602 |              991 | None                   |                0 |
+| Linda     |          584 |          4.06 |            574 |              796 | None                   |                0 |
+| Ben       |          307 |           3.7 |            434 |              726 | None                   |                0 |
+| Mimi      |          968 |          4.05 |            983 |              725 | None                   |                0 |
+| Gerald    |         2000 |           3.6 |            206 |              704 | None                   |                0 |
+| Fred      |          243 |          3.68 |            234 |              643 | None                   |                0 |
+| Cat       |          377 |          3.99 |            660 |              612 | None                   |                0 |
+| .Hon      |         1246 |          3.14 |            226 |              569 | None                   |                0 |
+| Princeton |          376 |          4.15 |            400 |              517 | None                   |                0 |
+| Susie     |          272 |          3.72 |            249 |              493 | None                   |                0 |
+| Lissa     |          834 |          3.68 |            417 |              482 | None                   |                0 |
+| Roanna    |         1039 |          3.71 |            235 |              415 | None                   |                0 |
+| Tiffany   |          408 |          4.09 |            197 |              415 | None                   |                0 |
+| Anton     |          158 |          3.92 |            351 |              401 | None                   |                0 |
+| Tim       |          702 |          3.66 |            112 |              395 | None                   |                0 |
+| Debbie    |          249 |          4.08 |            364 |              391 | None                   |                0 |
+| William   |         1215 |          4.41 |            100 |              375 | None                   |                0 |
+| Alison    |          775 |          3.83 |            231 |              343 | None                   |                0 |
+| Alan      |           80 |          3.78 |            118 |              279 | None                   |                0 |
+| Dottsy    |          196 |          3.42 |            410 |              260 | None                   |                0 |
++-----------+--------------+---------------+----------------+------------------+------------------------+------------------+
+(Output limit exceeded, 25 of 10000 total rows shown)
+
+         
+iv. Provide the SQL code you used to create your final dataset:
+
+	SELECT user.name,
+	user.review_count,
+	user.average_stars,
+	user.compliment_hot,
+	user.compliment_funny,
+	friend.friend_id,
+	count(friend_id)
+	from user
+	left join friend on
+	user.id = friend.user_id
+	group by user.id
+	order by count(friend_id) desc, compliment_funny desc,compliment_hot desc, average_stars desc, review_count desc
+	
+
+		
